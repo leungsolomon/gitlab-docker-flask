@@ -1,0 +1,39 @@
+default:
+  image: "python:3.7"
+  before_script:
+    - python --version
+    - pip install -r requirements.txt
+
+stages:
+  - Static Analysis
+  - Test
+
+mypy:
+  stage: Static Analysis
+  script:
+  - pwd
+  - ls -l
+  - python -m mypy app.py
+
+flake8:
+  stage: Static Analysis
+  script:
+  - flake8 --max-line-length=120 *.py
+
+pylint:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+  - pylint -d C0301 *.py
+
+pytest:
+  stage: Test
+  script:
+  - pytest
+
+coverage:
+  stage: Test
+  allow_failure: true
+  script:
+  - pytest --cov-report term-missing --cov=bild
+
